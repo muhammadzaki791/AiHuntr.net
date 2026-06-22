@@ -1,0 +1,12 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AIHuntr">
+  <!-- Brand mark: the gold "pick" star on the slate-indigo ink tile.
+       Colors are the exact site tokens (primary #222b3d, gold #eaaf49). -->
+  <defs>
+    <linearGradient id="gold" x1="6" y1="5" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f0bd60"/>
+      <stop offset="1" stop-color="#d89534"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7.5" fill="#222b3d"/>
+  <path d="M16.00 5.40L18.65 12.96L26.65 13.14L20.28 17.99L22.58 25.66L16.00 21.10L9.42 25.66L11.72 17.99L5.35 13.14L13.35 12.96Z" fill="url(#gold)"/>
+</svg>

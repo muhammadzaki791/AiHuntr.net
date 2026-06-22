@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la studio-aipickr)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('name:',p.name\\); console.log\\('scripts:',JSON.stringify\\(p.scripts,null,2\\)\\); console.log\\('deps:',Object.keys\\(p.dependencies||{}\\).join\\(', '\\)\\)\")",
+      "Bash(rm -rf .next)",
+      "Bash(npm run *)",
+      "Bash(node --env-file=.env.local scripts/seed.mjs)",
+      "Bash(npm install *)",
+      "Bash(node -e \"const p=require\\('geist/package.json'\\); console.log\\('geist', p.version\\)\")",
+      "Bash(node --env-file=.env.local scripts/seed-post.mjs)",
+      "Bash(node -e \"require\\('sharp'\\)\\('app/icon.svg',{density:384}\\).resize\\(128,128\\).png\\(\\).toFile\\('/tmp/icon-preview.png'\\).then\\(\\(\\)=>console.log\\('ok'\\)\\)\")"
+    ]
+  }
+}
