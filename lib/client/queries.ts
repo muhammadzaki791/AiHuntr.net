@@ -192,6 +192,22 @@ export const getHomepageContentQuery = groq`
   }
 `;
 
+// 12. Lean content index for /llms.txt — title, slug, and a one-line summary
+//     for every tool, post, and category. Tools by rating, posts by recency.
+export const getLlmsIndexQuery = groq`
+  {
+    "tools": *[_type == "tool" && defined(slug.current)] | order(rating desc) {
+      title, "slug": slug.current, "summary": coalesce(tagline, shortDescription)
+    },
+    "posts": *[_type == "post" && defined(slug.current)] | order(publishedAt desc) {
+      title, "slug": slug.current, "summary": excerpt
+    },
+    "categories": *[_type == "category" && defined(slug.current)] | order(title asc) {
+      title, "slug": slug.current, "summary": description
+    }
+  }
+`;
+
 /** Slug-only queries for generateStaticParams / sitemap. */
 export const getAllToolSlugsQuery = groq`
   *[_type == "tool" && defined(slug.current)]{ "slug": slug.current, _updatedAt }
