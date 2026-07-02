@@ -8,6 +8,12 @@ import { PostGrid } from "@/components/blog/post-grid";
 import { CategoryCard } from "@/components/category/category-card";
 import { SearchBar } from "@/components/search/search-bar";
 import { NewsletterSection } from "@/components/newsletter/newsletter-section";
+import { SchemaMarkup } from "@/components/shared/schema-markup";
+import {
+  buildOrganizationSchema,
+  buildWebSiteSchema,
+  buildWebPageSchema,
+} from "@/lib/seo/schema";
 import type { HomepageContent } from "@/types/content-types";
 
 /**
@@ -21,6 +27,16 @@ export async function HomepageContentWrapper() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <SchemaMarkup
+        schema={[
+          buildOrganizationSchema(),
+          buildWebSiteSchema(),
+          buildWebPageSchema({
+            name: `${siteConfig.name} — Best AI Tools`,
+            description: siteConfig.description,
+          }),
+        ]}
+      />
       {/* 1. Hero */}
       <section className="flex flex-col items-center gap-6 py-20 text-center md:py-28">
         <p className="eyebrow">Independent AI tool reviews</p>

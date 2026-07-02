@@ -1,5 +1,5 @@
 import type { StructureResolver } from "sanity/structure";
-import { Wrench, FileText, Tag, Mail, Search } from "lucide-react";
+import { Wrench, FileText, Tag, Mail, Search, User } from "lucide-react";
 
 /**
  * Studio sidebar structure. Each section lists its document type newest-first.
@@ -33,6 +33,14 @@ export const structure: StructureResolver = (S) =>
           S.documentTypeList("category")
             .title("Categories")
             .defaultOrdering([{ field: "_createdAt", direction: "desc" }]),
+        ),
+      S.listItem()
+        .title("Authors")
+        .icon(User)
+        .child(
+          S.documentTypeList("author")
+            .title("Authors")
+            .defaultOrdering([{ field: "name", direction: "asc" }]),
         ),
       S.divider(),
       S.listItem()

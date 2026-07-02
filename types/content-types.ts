@@ -40,6 +40,19 @@ export interface CategoryRef {
   slug: Slug;
 }
 
+/** Author, projected for bylines and Person JSON-LD. Optional on content. */
+export interface Author {
+  _id: string;
+  name: string;
+  slug: Slug;
+  avatar?: SanityImage;
+  role?: string;
+  bio?: string;
+  credentials?: string[];
+  url?: string;
+  sameAs?: string[];
+}
+
 /** Lightweight tool shape returned by list queries (cards, grids). */
 export interface ToolListItem {
   _id: string;
@@ -86,6 +99,7 @@ export interface Tool {
   officialUrl: string;
   overview: PortableTextBlock[];
   faqs: Faq[];
+  author?: Author;
   relatedTools?: ToolListItem[];
   relatedPosts?: PostListItem[];
 }
@@ -102,6 +116,7 @@ export interface Post {
   updatedAt?: string;
   body: PortableTextBlock[];
   faqs: Faq[];
+  author?: Author;
   relatedTools?: ToolListItem[];
   relatedPosts?: PostListItem[];
 }

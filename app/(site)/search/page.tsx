@@ -4,13 +4,16 @@ import { sanityClient } from "@/sanity/lib/client";
 import { getSearchResultsQuery } from "@/lib/client/queries";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
 import { truncate } from "@/lib/client/utils";
+import { canonicalForSlug } from "@/lib/seo/metadata";
 import type { Route } from "next";
 import type { SearchResult } from "@/types/content-types";
 
 export const metadata: Metadata = {
   title: "Search",
   description: "Search AI tools and articles.",
-  // Search-result pages shouldn't be indexed (thin/duplicate content).
+  // Search-result pages shouldn't be indexed (thin/duplicate content), but a
+  // canonical to the clean /search path collapses ?q= variants.
+  alternates: { canonical: canonicalForSlug("search") },
   robots: { index: false, follow: true },
 };
 

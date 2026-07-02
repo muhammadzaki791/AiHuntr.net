@@ -4,6 +4,7 @@ import { post } from "./post";
 import { category } from "./category";
 import { newsletter } from "./newsletter";
 import { seo } from "./seo";
+import { author } from "./author";
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   tool,
@@ -11,4 +12,5 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   category,
   newsletter,
   seo,
+  author,
 ];

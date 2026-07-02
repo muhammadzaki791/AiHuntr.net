@@ -21,9 +21,11 @@ export function RelatedContent({
   posts?: PostListItem[] | null;
 }) {
   // Sanity returns null (not undefined) for unset reference arrays, so a
-  // default param wouldn't catch it — coalesce explicitly.
-  const toolList = tools ?? [];
-  const postList = posts ?? [];
+  // default param wouldn't catch it — coalesce explicitly. We also drop null
+  // entries: a weak reference to an unpublished doc dereferences to null, and
+  // mapping over those would crash on `tool._id`.
+  const toolList = (tools ?? []).filter(Boolean);
+  const postList = (posts ?? []).filter(Boolean);
   const hasTools = toolList.length > 0;
   const hasPosts = postList.length > 0;
   if (!hasTools && !hasPosts) return null;

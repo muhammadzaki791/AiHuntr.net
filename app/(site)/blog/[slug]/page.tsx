@@ -47,6 +47,9 @@ export async function generateMetadata({
     title: post.title,
     description: post.excerpt,
     ogImage: post.coverImage,
+    ogType: "article",
+    publishedTime: post.publishedAt,
+    modifiedTime: post.updatedAt ?? post.publishedAt,
   });
 }
 
@@ -105,6 +108,30 @@ export default async function PostPage({
           {post.excerpt}
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+          {post.author?.name && (
+            <>
+              <span className="flex items-center gap-2">
+                {post.author.avatar && (
+                  <Image
+                    src={urlFor(post.author.avatar)
+                      .width(48)
+                      .height(48)
+                      .fit("crop")
+                      .url()}
+                    alt={post.author.name}
+                    width={24}
+                    height={24}
+                    className="h-6 w-6 rounded-full object-cover"
+                  />
+                )}
+                <span>
+                  By <span className="text-foreground">{post.author.name}</span>
+                  {post.author.role && ` · ${post.author.role}`}
+                </span>
+              </span>
+              <span aria-hidden>·</span>
+            </>
+          )}
           <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
           {post.updatedAt && (
             <span>· Updated {formatDate(post.updatedAt)}</span>

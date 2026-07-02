@@ -56,6 +56,28 @@ export function ToolDetail({ tool }: { tool: Tool }) {
                 {tool.pricingModel}
               </span>
             </div>
+            {tool.author?.name && (
+              <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+                {tool.author.avatar && (
+                  <Image
+                    src={urlFor(tool.author.avatar)
+                      .width(48)
+                      .height(48)
+                      .fit("crop")
+                      .url()}
+                    alt={tool.author.name}
+                    width={24}
+                    height={24}
+                    className="h-6 w-6 rounded-full object-cover"
+                  />
+                )}
+                <span>
+                  Reviewed by{" "}
+                  <span className="text-foreground">{tool.author.name}</span>
+                  {tool.author.role && ` · ${tool.author.role}`}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 

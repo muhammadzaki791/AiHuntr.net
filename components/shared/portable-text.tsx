@@ -22,6 +22,17 @@ function headingText(children: React.ReactNode): string {
 
 const components: PortableTextComponents = {
   block: {
+    // Defensive downgrade: the page title is the only H1, so any H1 authored in
+    // legacy body content is rendered as an H2 to avoid a second top-level
+    // heading. New content can't select H1 (constrained in the post schema).
+    h1: ({ children }) => (
+      <h2
+        id={slugifyHeading(headingText(children))}
+        className="mt-8 scroll-mt-24 text-2xl font-semibold tracking-tight"
+      >
+        {children}
+      </h2>
+    ),
     h2: ({ children }) => (
       <h2
         id={slugifyHeading(headingText(children))}

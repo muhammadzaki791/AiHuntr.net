@@ -32,6 +32,13 @@ const POST_LIST_FIELDS = groq`
   publishedAt
 `;
 
+// Author projection for bylines + Person JSON-LD. Null when unset.
+const AUTHOR_FIELDS = groq`
+  "author": author->{
+    _id, name, slug, avatar, role, bio, credentials, url, sameAs
+  }
+`;
+
 // 1. All tools (directory grid).
 export const getAllToolsQuery = groq`
   *[_type == "tool"] | order(rating desc) {
@@ -60,6 +67,7 @@ export const getToolBySlugQuery = groq`
     officialUrl,
     overview,
     faqs,
+    ${AUTHOR_FIELDS},
     "relatedTools": relatedTools[]->{
       _id, _type, title, slug, logo, shortDescription, tagline,
       "category": category->{title, slug}, pricingModel, rating, affiliateSlug
@@ -99,6 +107,7 @@ export const getPostBySlugQuery = groq`
     updatedAt,
     body,
     faqs,
+    ${AUTHOR_FIELDS},
     "relatedTools": relatedTools[]->{
       _id, _type, title, slug, logo, shortDescription, tagline,
       "category": category->{title, slug}, pricingModel, rating, affiliateSlug

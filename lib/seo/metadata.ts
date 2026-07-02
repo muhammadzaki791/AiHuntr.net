@@ -13,6 +13,33 @@ interface BuildMetadataInput {
   canonicalUrl?: string;
   noIndex?: boolean;
   keywords?: string[];
+  /** OpenGraph type — "article" for posts, "website" otherwise (default). */
+  ogType?: "website" | "article";
+  /** Article-only OG fields (ISO strings). Ignored unless ogType === "article". */
+  publishedTime?: string;
+  modifiedTime?: string;
+}
+
+/**
+ * Absolute URL to the dynamic OG image generator (app/api/og). Every page's
+ * social image is composed here: the page title over a dark-toned background
+ * (the content's own image when one exists, otherwise a branded gradient).
+ * Centralizing this means no page ships without a share image.
+ */
+export function buildOgImageUrl(title: string, bgImageUrl?: string): string {
+  const params = new URLSearchParams({ title });
+  if (bgImageUrl) params.set("image", bgImageUrl);
+  return `${siteConfig.url}/api/og?${params.toString()}`;
+}
+
+/**
+ * Resolve a self-referencing canonical URL from a page slug. `pageSlug` mirrors
+ * the route path ("home" → "/", "tools/chatgpt" → "/tools/chatgpt"), so faceted
+ * variants like /blog?category=x still canonicalize to their clean path.
+ */
+export function canonicalForSlug(pageSlug: string): string {
+  const path = pageSlug === "home" ? "" : `/${pageSlug}`;
+  return `${siteConfig.url}${path}`;
 }
 
 /**
@@ -27,13 +54,20 @@ export function buildMetadata({
   canonicalUrl,
   noIndex,
   keywords,
+  ogType = "website",
+  publishedTime,
+  modifiedTime,
 }: BuildMetadataInput): Metadata {
-  const image =
+  // Background for the OG composition: an explicit URL, or a cropped Sanity
+  // render. The generator overlays the title and darkens it either way.
+  const bgImageUrl =
     typeof ogImage === "string"
       ? ogImage
       : ogImage
-        ? urlFor(ogImage).width(1200).height(630).url()
+        ? urlFor(ogImage).width(1200).height(630).fit("crop").url()
         : undefined;
+
+  const ogImageUrl = buildOgImageUrl(title, bgImageUrl);
 
   return {
     title,
@@ -45,14 +79,22 @@ export function buildMetadata({
       title,
       description,
       siteName: siteConfig.name,
-      type: "website",
-      ...(image ? { images: [{ url: image, width: 1200, height: 630 }] } : {}),
+      locale: "en_US",
+      type: ogType,
+      ...(canonicalUrl ? { url: canonicalUrl } : {}),
+      ...(ogType === "article"
+        ? {
+            ...(publishedTime ? { publishedTime } : {}),
+            ...(modifiedTime ? { modifiedTime } : {}),
+          }
+        : {}),
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }],
     },
     twitter: {
-      card: image ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title,
       description,
-      ...(image ? { images: [image] } : {}),
+      images: [ogImageUrl],
     },
   };
 }
@@ -64,19 +106,31 @@ export async function getSeoForSlug(pageSlug: string): Promise<SeoDoc | null> {
 
 /**
  * Convenience: resolve metadata for a page from its SEO doc with fallbacks.
- * `fallback` supplies title/description/ogImage when no SEO doc exists.
+ * `fallback` supplies title/description/ogImage when no SEO doc exists. A
+ * self-referencing canonical is derived from `pageSlug` unless the SEO doc
+ * overrides it.
  */
 export async function buildMetadataForSlug(
   pageSlug: string,
-  fallback: { title: string; description: string; ogImage?: SeoDoc["ogImage"] },
+  fallback: {
+    title: string;
+    description: string;
+    ogImage?: SeoDoc["ogImage"] | string;
+    ogType?: "website" | "article";
+    publishedTime?: string;
+    modifiedTime?: string;
+  },
 ): Promise<Metadata> {
   const seo = await getSeoForSlug(pageSlug);
   return buildMetadata({
     title: seo?.pageTitle ?? fallback.title,
     description: seo?.pageDescription ?? fallback.description,
     ogImage: seo?.ogImage ?? fallback.ogImage,
-    canonicalUrl: seo?.canonicalUrl,
+    canonicalUrl: seo?.canonicalUrl ?? canonicalForSlug(pageSlug),
     noIndex: seo?.noIndex,
     keywords: seo?.keywords,
+    ogType: fallback.ogType,
+    publishedTime: fallback.publishedTime,
+    modifiedTime: fallback.modifiedTime,
   });
 }

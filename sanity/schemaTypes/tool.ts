@@ -52,6 +52,14 @@ export const tool = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "author",
+      title: "Reviewed By",
+      type: "reference",
+      to: [{ type: "author" }],
+      description:
+        "Optional. Adds a Person author to the Review schema (E-E-A-T). Falls back to the site organization when empty.",
+    }),
+    defineField({
       name: "pricingModel",
       title: "Pricing Model",
       type: "string",
