@@ -22,7 +22,7 @@ export function CategoryCard({ category }: { category: Category }) {
         </p>
       </div>
       {category.description && (
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
           {category.description}
         </p>
       )}
